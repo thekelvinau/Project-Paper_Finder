@@ -237,20 +237,36 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
 from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0
 from webdriver_manager.chrome import ChromeDriverManager
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
+from selenium.webdriver.support.ui import Select
+from time import sleep
+
+num_of_papers = 30
+elem_list=[]
 
 #url = "https://medium.com/dualcores-studio/make-an-android-custom-view-publish-and-open-source-99a3d86df228"	
-url = "https://ui.adsabs.harvard.edu/search/p_=0&q=hello%20world&sort=date%20desc%2C%20bibcode%20desc"
+url = "https://ui.adsabs.harvard.edu/search/q=field&sort=date%20desc%2C%20bibcode%20desc&p_=0"
 
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get(url)
-#elems = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "main-content")))
-elems = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[1]/div/div/div[2]/ul/li[1]/div/div[2]/div/a')))
-elems = driver.find_elements_by_xpath('/html/body/div[3]/div/div/div[3]/div/div/div/div[4]/div/div/div/div[2]/div/div[1]/div/div/div[2]/ul/li[1]/div/div[2]/div/a[@href]')
-#elems = driver.find_element_by_partial_link_text('https://ui.adsabs.harvard.edu/#abs/')
-for elem in elems:
-    print(elem.get_attribute("href"))
+##elems = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "main-content")))
+elems = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[1]/div/div/div[2]/ul/li[1]/div/div[2]/div/a')))
+select = Select(driver.find_element_by_id('per-page-select'))
+#print(select)
+select.select_by_visible_text('500')
+#select.select_by_index(500)
+#select.select_by_value('500')
+sleep(5)
+
+for line in range(1,num_of_papers+1):
+    path = '/html/body/div[3]/div/div/div[3]/div/div/div/div[4]/div/div/div/div[2]/div/div[1]/div/div/div[2]/ul/li[{}]/div/div[2]/div/a[@href]'.format(line)
+    elems = driver.find_elements_by_xpath(path)
+    for elem in elems:
+        elem_list.append(elem.get_attribute("href"))
+print(elem_list)        
+print(len(elem_list))
 driver.close()
+
 ##elems = WebDriverWait(driver,10).until(EC.presence_of_all_elements_located((By.ID, "0846 [href]")))
 ##links = [elem.get_attribute('href') for elem in elems]
 #content_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "0846")))
