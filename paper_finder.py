@@ -212,7 +212,7 @@ Created on Fri Oct 11 11:23:27 2019
 #    print(link.get('href'))
     
 
-
+#https://stackoverflow.com/questions/34759787/fetch-all-href-link-using-selenium-in-python
 #https://www.programcreek.com/python/example/88681/selenium.webdriver.support.expected_conditions.presence_of_element_located
 #https://selenium-python.readthedocs.io/waits.html
 #https://www.seleniumhq.org/docs/04_webdriver_advanced.jsp
@@ -239,21 +239,47 @@ from selenium.webdriver.support import expected_conditions as EC # available sin
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 
-url = "https://medium.com/dualcores-studio/make-an-android-custom-view-publish-and-open-source-99a3d86df228"	
+#url = "https://medium.com/dualcores-studio/make-an-android-custom-view-publish-and-open-source-99a3d86df228"	
+url = "https://ui.adsabs.harvard.edu/search/p_=0&q=hello%20world&sort=date%20desc%2C%20bibcode%20desc"
 
-#driver = webdriver.Chrome(r"C:/Users/Kelvin/.wdm/chromedriver/77.0.3865.40/win32/chromedriver.exe")
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get(url)
-try:
-    content_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "0846")))
-    print(content_element)
-finally:
-    driver.quit()
-#content_element = driver.find_element_by_class_name("0846")
-content_html = content_element.get_attribute("innerHTML")	
-
-soup = BeautifulSoup(content_html, "html.parser")
-p_tags = soup.find_all("p")
-for p in p_tags:	   
-    print(p.prettify())
+#elems = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "main-content")))
+elems = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[1]/div/div/div[2]/ul/li[1]/div/div[2]/div/a')))
+elems = driver.find_elements_by_xpath('/html/body/div[3]/div/div/div[3]/div/div/div/div[4]/div/div/div/div[2]/div/div[1]/div/div/div[2]/ul/li[1]/div/div[2]/div/a[@href]')
+#elems = driver.find_element_by_partial_link_text('https://ui.adsabs.harvard.edu/#abs/')
+for elem in elems:
+    print(elem.get_attribute("href"))
 driver.close()
+##elems = WebDriverWait(driver,10).until(EC.presence_of_all_elements_located((By.ID, "0846 [href]")))
+##links = [elem.get_attribute('href') for elem in elems]
+#content_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "0846")))
+##print(content_element)
+###try:
+####    content_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="main-content"]/div[1]/div/div/div[2]/ul/li[1]/div/div[2]/div/a')))
+###    content_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "0846")))
+###    print(content_element)
+###finally:
+###    driver.quit()
+####content_element = driver.find_element_by_class_name("0846")
+#content_html = content_element.get_attribute("innerHTML")
+##print(content_html)	
+#
+#soup = BeautifulSoup(content_html, "html.parser")
+#a_tags = soup.find_all("a")
+#for a in a_tags:	   
+#    print(a.prettify())
+#driver.close()
+#print(a)
+
+
+
+
+#https://github.com/urllib3/urllib3/issues/869
+##import ssl, urllib3
+##r = urllib3.PoolManager().connection_from_url('http://en.wikipedia.org/wiki/Main_Page').request('GET', 'http://en.wikipedia.org/wiki/Main_Page', assert_same_host=False)
+##print(r.status)
+#
+#import ssl, urllib3
+#r = urllib3.PoolManager(maxsize=10, block=False).connection_from_url('http://en.wikipedia.org/wiki/Main_Page').request('GET', 'http://en.wikipedia.org/wiki/Main_Page', assert_same_host=False)
+#print(r.status)
