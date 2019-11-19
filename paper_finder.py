@@ -236,12 +236,13 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
 from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0
+from selenium.webdriver import ActionChains
 from webdriver_manager.chrome import ChromeDriverManager
 #from bs4 import BeautifulSoup
 from selenium.webdriver.support.ui import Select
 from time import sleep
 
-num_of_papers = 500
+num_of_papers = 1
 elem_list=[]
 url_list=[]
 
@@ -279,8 +280,22 @@ for abstract in elem_list:
         url_list.append(link.get_attribute("href"))
 #    print(driver.find_elements_by_xpath(path))
 #    driver.close()
-print(url_list)
-print(len(url_list))
+#print(url_list)
+#print(len(url_list))
+url_list = [x for x in url_list if "PDF" in x] #filter out the links that contain the string "PDF"
+print('Found', len(url_list),'PDF links')
+#print(url_list)
+#print(len(url_list))
+
+for url in url_list:
+    driver.get(url)
+    sleep(20)
+    with open('page.html', 'w') as f:
+        f.write(driver.page_source)
+    
+#btn = driver.find_element_by_id('download')
+#print(btn)
+#ActionChains.send_keys('p').perform()
 
 ##elems = WebDriverWait(driver,10).until(EC.presence_of_all_elements_located((By.ID, "0846 [href]")))
 ##links = [elem.get_attribute('href') for elem in elems]
